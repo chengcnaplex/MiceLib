@@ -143,7 +143,7 @@ int openDev(char* dev) {
     return fd;
 }
 
-int sendMiceMove(char* dev, int rel_x, int rel_y) {
+int miceMove(char* dev, int rel_x, int rel_y) {
 
     int fd = open(dev, O_RDWR);
 
@@ -178,6 +178,12 @@ int sendChar(char* dev, int value) {
     close(fd);
 }
 
+int sendCapChar(char* dev, char ch) {
+    sendKBDown(dev, shiftDecode());
+    sendChar(dev, ch);
+    sendKBUp(dev, shiftDecode());
+}
+
 int sendMiceDown(char* dev, int value){
     sendKBDown(dev, value);
 }
@@ -190,13 +196,7 @@ int sendMiceAction(char* dev, int value) {
     sendChar(dev, value);
 }
 
-int sendCapChar(char* dev, char ch) {
-    sendKBDown(dev, shiftDecode());
-    sendChar(dev, ch);
-    sendKBUp(dev, shiftDecode());
-}
-
-int sendString(char* dev, char* string) {
+int KBString(char* dev, char* string) {
 
     if (string == NULL){
         return 0;
@@ -207,10 +207,10 @@ int sendString(char* dev, char* string) {
 
         int decode = keyDecode(string[0]);
         if (CAPDecodeFlag == 0) {
-            if (string[0] == '\n') {
-                sendChar(dev, KEY_ENTER);
-                sendChar(dev, KEY_ENTER);
-            } else 
+            //if (string[0] == '\n') {
+            //    sendChar(dev, KEY_ENTER);
+            //    sendChar(dev, KEY_ENTER);
+            //} else 
                 sendChar(dev, decode);
 
         } else {
@@ -248,8 +248,8 @@ int miceWheel(char* dev, int rel) {
 
 int main(int argc, char *argv) {
 
-    sendMiceMove("/dev/input/event3", 10, 10);
-    sendString("/dev/input/event1", "ls\n");
-    sendString("/dev/input/event1", "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?\n");
-    //miceWheel("/dev/input/event3", 1);
+    miceMove("/dev/input/event3", 10, 10);
+    KBString("/dev/input/event1", "ls\n");
+    KBString("/dev/input/event1", "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?\n");
+    miceWheel("/dev/input/event3", 1);
 }

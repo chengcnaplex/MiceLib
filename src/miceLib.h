@@ -1,5 +1,5 @@
-#ifndef __MICELib_H__
-#define __MICELib_H__
+#ifndef __MICELIB_H__
+#define __MICELIB_H__
 
 #include <stdio.h>
 #include <string.h>
@@ -8,11 +8,33 @@
 #include <sys/time.h>
 #include <linux/input.h>
 
-int setMiceDown(char* dev, int value);
-int setMiceUp(char* dev, int value);
-int setMiceMove(char* dev, int rel_x, int rel_y);
-int setKeyboardDown(char* dev, int value);
-int setKeyboardUp(char* dev, int value);
-int setKeyboardAction(char* dev, int value);
+/**
+ * mice wheel, rel value can be The positive and negative.
+ */
+int miceWheel(char* dev, int rel);
+/**
+ * mice move with relative.
+ */
+int miceMove(char* dev, int rel_x, int rel_y);
+/**
+ * mice left single click.
+ */
+int miceLeftSClick(char* dev);
+/**
+ * mice left double click.
+ */
+int miceLeftDClick(char* dev);
+/**
+ * mice right single click.
+ */
+int miceRightClick(char* dev);
+/**
+ * mice middle single click.
+ */
+int miceMiddleClick(char* dev);
+/**
+ * keyboard char or string.
+ */
+int KBString(char* dev, char* string);
 
-#endif // __MICELib_H__
+#endif // __MICELIB_H__
