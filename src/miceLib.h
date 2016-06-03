@@ -4,12 +4,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <linux/input.h>
 #include <fcntl.h>
 #include <sys/time.h>
-
-extern char* defaultMice;
-extern char *devaultKB;
+#include <linux/input.h>
 
 int setMiceDown(char* dev, int value);
 int setMiceUp(char* dev, int value);
