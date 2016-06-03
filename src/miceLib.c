@@ -82,18 +82,21 @@ int miceMiddleDecode(void) {
     return BTN_MIDDLE;
 }
 
-int miceWheelDecode(void) {
-    return BTN_WHEEL;
-}
+int sendREL_WheelData(int fd, int rel) {
+    struct input_event event;
 
-int miceGearDownDecode(void) {
-    return BTN_GEAR_DOWN;
-}
+    gettimeofday(&event.time, 0);
 
-int miceGearUpDecode(void) {
-    return BTN_GEAR_UP;
-}
+    event.type = EV_REL;
+    event.value = rel;
+    event.code = REL_WHEEL;
+    write(fd, &event, sizeof(event));
 
+    event.type = EV_SYN;
+    event.value = 0;
+    event.code = SYN_REPORT;
+    write(fd, &event, sizeof(event));
+}
 
 int sendREL_XYData(int fd, int rel_x, int rel_y) {
     struct input_event event;
@@ -151,8 +154,6 @@ int sendMiceMove(char* dev, int rel_x, int rel_y) {
 
 
 int sendKBDown(char* dev, int value) {
-    struct input_event event;
-    
     int fd = openDev(dev);
     
     sendKey(fd, value, 1);
@@ -161,8 +162,6 @@ int sendKBDown(char* dev, int value) {
 }
 
 int sendKBUp(char* dev, int value) {
-    struct input_event event;
-    
     int fd = openDev(dev);
     
     sendKey(fd, value, 0);
@@ -171,8 +170,6 @@ int sendKBUp(char* dev, int value) {
 }
 
 int sendChar(char* dev, int value) {
-    struct input_event event;
-    
     int fd = openDev(dev);
     
     sendKey(fd, value, 1);
@@ -242,28 +239,24 @@ int miceMiddleClick(char* dev) {
     sendMiceAction(dev, miceMiddleDecode());
 }
 
-int miceGearUp(char* dev) {
-    sendMiceAction(dev, miceGearUpDecode());
+int miceWheel(char* dev, int rel) {
+    int fd = openDev(dev);
+    sendREL_WheelData(fd, rel);
+    close(fd);
 }
 
-int miceGearDown(char* dev) {
-    sendMiceAction(dev, miceGearDownDecode());
-}
 
 int main(int argc, char *argv) {
 
     int i = 0;
     
-    //sendMiceMove("/dev/input/event3", 10, 10);
-    //sendString("/dev/input/event1", "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?\n");
+    sendMiceMove("/dev/input/event3", 10, 10);
+    sendString("/dev/input/event1", "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?\n");
 
-    //sendChar("/dev/input/event1", KEY_L);
-    //sendChar("/dev/input/event1", KEY_S);
-    //sendChar("/dev/input/event1", KEY_ENTER);
-    //sendChar("/dev/input/event1", KEY_ENTER);
-    sendString("/dev/input/event1", "ls\n");
-    //miceGearUp("/dev/input/event3");
-    //miceGearUp("/dev/input/event3");
+    //sendString("/dev/input/event1", "ls\n");
+    while ( i++ < 50 ) {
+        miceWheel("/dev/input/event3", 1);
+        usleep(1000000);
+    }
 
-    //usleep(1000000);
 }
