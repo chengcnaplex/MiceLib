@@ -248,15 +248,8 @@ int miceWheel(char* dev, int rel) {
 
 int main(int argc, char *argv) {
 
-    int i = 0;
-    
     sendMiceMove("/dev/input/event3", 10, 10);
+    sendString("/dev/input/event1", "ls\n");
     sendString("/dev/input/event1", "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?\n");
-
-    //sendString("/dev/input/event1", "ls\n");
-    while ( i++ < 50 ) {
-        miceWheel("/dev/input/event3", 1);
-        usleep(1000000);
-    }
-
+    //miceWheel("/dev/input/event3", 1);
 }
